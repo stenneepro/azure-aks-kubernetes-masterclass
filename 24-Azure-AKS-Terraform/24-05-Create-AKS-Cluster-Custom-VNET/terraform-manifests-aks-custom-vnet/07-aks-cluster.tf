@@ -13,7 +13,7 @@
   - node_labels
   - tags
 3. Enable MSI
-4. Add On Profiles 
+4. Add On Profiles
   - Azure Policy
   - Azure Monitor (Reference Log Analytics Workspace id)
 5. RBAC & Azure AD Integration
@@ -21,7 +21,7 @@
   - Windows Admin Profile
   - Linux Profile
 7. Network Profile
-8. Cluster Tags  
+8. Cluster Tags
 */
 
 resource "azurerm_kubernetes_cluster" "aks_cluster" {
@@ -36,25 +36,25 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     name                 = "systempool"
     vm_size              = "Standard_DS2_v2"
     orchestrator_version = data.azurerm_kubernetes_service_versions.current.latest_version
-    availability_zones   = [1, 2, 3]
+    zones   = [1, 2, 3]
     enable_auto_scaling  = true
     max_count            = 3
     min_count            = 1
     os_disk_size_gb      = 30
     type                 = "VirtualMachineScaleSets"
-    vnet_subnet_id        = azurerm_subnet.aks-default.id 
+    vnet_subnet_id        = azurerm_subnet.aks-default.id
     node_labels = {
       "nodepool-type"    = "system"
       "environment"      = "dev"
       "nodepoolos"       = "linux"
-      "app"              = "system-apps" 
-    } 
+      "app"              = "system-apps"
+    }
    tags = {
       "nodepool-type"    = "system"
       "environment"      = "dev"
       "nodepoolos"       = "linux"
-      "app"              = "system-apps" 
-   } 
+      "app"              = "system-apps"
+   }
   }
 
 # Identity (System Assigned or Service Principal)
@@ -62,22 +62,17 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     type = "SystemAssigned"
   }
 
-# Add On Profiles
-  addon_profile {
-    azure_policy {enabled =  true}
-    oms_agent {
-      enabled =  true
-      log_analytics_workspace_id = azurerm_log_analytics_workspace.insights.id
-    }
+  # Add On Profiles
+  azure_policy_enabled = true
+  oms_agent {
+    log_analytics_workspace_id = azurerm_log_analytics_workspace.insights.id
   }
 
-# RBAC and Azure AD Integration Block
-  role_based_access_control {
-    enabled = true
-    azure_active_directory {
-      managed = true
-      admin_group_object_ids = [azuread_group.aks_administrators.id]
-    }
+  # RBAC and Azure AD Integration Block
+  role_based_access_control_enabled = true
+  azure_active_directory_role_based_access_control {
+    managed = true
+    admin_group_object_ids = [azuread_group.aks_administrators.id]
   }
 
 # Windows Profile
@@ -97,7 +92,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
 # Network Profile
   network_profile {
     network_plugin = "azure"
-    load_balancer_sku = "Standard"
+    load_balancer_sku = "standard"
   }
 
   tags = {

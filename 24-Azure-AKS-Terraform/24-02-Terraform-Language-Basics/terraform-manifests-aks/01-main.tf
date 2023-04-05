@@ -1,4 +1,4 @@
-# We will define 
+# We will define
 # 1. Terraform Settings Block
 # 1. Required Version Terraform
 # 2. Required Terraform Providers
@@ -10,7 +10,7 @@
 terraform {
   # 1. Required Version Terraform
   required_version = ">= 0.13"
-  # 2. Required Terraform Providers  
+  # 2. Required Terraform Providers
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -26,13 +26,13 @@ terraform {
     }
   }
 
-# Terraform State Storage to Azure Storage Container
+  # Terraform State Storage to Azure Storage Container
   backend "azurerm" {
-    resource_group_name   = "terraform-storage-rg"
-    storage_account_name  = "terraformstatexlrwdrzs"
-    container_name        = "tfstatefiles"
-    key                   = "terraform.tfstate"
-  }  
+    resource_group_name  = "terraform-storage-rg"
+    storage_account_name = "terraformstatestan"
+    container_name       = "tfstatefiles"
+    key                  = "terraform.tfstate"
+  }
 }
 
 

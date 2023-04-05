@@ -13,7 +13,7 @@
   - node_labels
   - tags
 3. Enable MSI
-4. Add On Profiles 
+4. Add On Profiles
   - Azure Policy
   - Azure Monitor (Reference Log Analytics Workspace id)
 5. RBAC & Azure AD Integration
@@ -21,7 +21,7 @@
   - Windows Admin Profile
   - Linux Profile
 7. Network Profile
-8. Cluster Tags  
+8. Cluster Tags
 */
 
 resource "azurerm_kubernetes_cluster" "aks_cluster" {
@@ -46,14 +46,14 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
       "nodepool-type"    = "system"
       "environment"      = "dev"
       "nodepoolos"       = "linux"
-      "app"              = "system-apps" 
-    } 
+      "app"              = "system-apps"
+    }
    tags = {
       "nodepool-type"    = "system"
       "environment"      = "dev"
       "nodepoolos"       = "linux"
-      "app"              = "system-apps" 
-   } 
+      "app"              = "system-apps"
+   }
   }
 
 # Identity (System Assigned or Service Principal)
@@ -62,21 +62,16 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   }
 
 # Add On Profiles
-  addon_profile {
-    azure_policy {enabled =  true}
-    oms_agent {
-      enabled =  true
-      log_analytics_workspace_id = azurerm_log_analytics_workspace.insights.id
-    }
+  azure_policy_enabled = true
+  oms_agent {
+    log_analytics_workspace_id = azurerm_log_analytics_workspace.insights.id
   }
 
 # RBAC and Azure AD Integration Block
-  role_based_access_control {
-    enabled = true
-    azure_active_directory {
-      managed = true
-      admin_group_object_ids = [azuread_group.aks_administrators.id]
-    }
+  role_based_access_control_enabled = true
+  azure_active_directory_role_based_access_control {
+    managed = true
+    admin_group_object_ids = [azuread_group.aks_administrators.id]
   }
 
 # Windows Profile
